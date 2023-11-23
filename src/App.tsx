@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { GridContainer } from "./components/GridContainer";
+import { IAppData, IAppInputData } from "./types";
+import useGetFromAPI from "./hooks/useGetFromAPI";
+import { useDispatch } from "react-redux";
+import { bannersAppActions } from "./store/banners-data/bannersAppSlice";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface IAppProps {
+	inputData: IAppInputData;
+}
+
+function App({ inputData }: IAppProps) {
+	const dispatch = useDispatch();
+
+	const { isLoading, error, data } = useGetFromAPI<IAppData>(inputData.dataApiLink + inputData.dataId + "/" + inputData.dataModule + "/settings");
+
+	const [proceed, setProceed] = useState<boolean>(false);
+
+	useEffect(() => {
+		if (data) {
+			dispatch(bannersAppActions.initialize({ data: data }));
+			setProceed(true);
+		}
+		if (error) {
+			console.log(error);
+			dispatch(bannersAppActions.initialize({ data: null }));
+			setProceed(true);
+		}
+	}, [data, error, inputData]);
+
+	return (
+		<>
+			{proceed && <GridContainer />}
+		</>
+	);
 }
 
 export default App;

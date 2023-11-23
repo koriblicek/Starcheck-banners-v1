@@ -1,12 +1,11 @@
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { IAppInputData } from './types';
-import { Alert, AlertTitle } from '@mui/material';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css';
+// import './index.css';
 
-const rootElement = document.getElementById('advertisement-root') as HTMLElement;
+const rootElement = document.getElementById('banners-v1-root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
 //input data
@@ -17,31 +16,27 @@ let errorStatus = false;
 let errorMessage = "";
 
 if (root) {
-  const dal = "https://api.ralph.sk/apijs/";
+  const dal = "https://www.starcheck.sk/apijs/";
   const di = rootElement.getAttribute("data-id");
   const dm = rootElement.getAttribute("data-module");
   if ((dal !== null) && (di !== null) && (dm !== null)) {
     inputData = {
-      dataApiLink: "https://api.ralph.sk/apijs/",
+      dataApiLink: dal,
       dataId: di,
       dataModule: dm
     };
   } else {
-    errorStatus = true;
-    errorMessage = "Required input is missing!";
+    errorMessage = "(Starcheck-banners-v1): Some of reuiqred input data are missing!";
+    console.log(errorMessage);
   }
 } else {
-  errorStatus = true;
-  errorMessage = "Root node '<div id=\"debuilder-root\"></div>' not found!";
+  errorMessage = "(Starcheck-banners-v1): Root node id 'banners-v1-root' not found!";
 }
 
 root.render(
   // <React.StrictMode>
-  <Provider store={store}>
-    {inputData && <App inputData={inputData} />}
-    {errorStatus && <Alert variant='standard' severity='error' sx={{ m: 1 }} >
-      <AlertTitle>Data error</AlertTitle>
-      {errorMessage}</Alert>}
-  </Provider>
+    <Provider store={store}>
+      {inputData && <App inputData={inputData} />}
+    </Provider>
   // </React.StrictMode>
 );
