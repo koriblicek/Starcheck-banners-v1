@@ -1,39 +1,114 @@
-import { Fade, Grid, IconButton } from "@mui/material";
+import { Box, Button, Grid, IconButton } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { bannersAppActions } from "../../store/banners-data/bannersAppSlice";
+import { IAppData } from "../../types";
 import { useAppSelector } from "../../store/hooks";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ExtraOpenButton } from "./ExtraOpenButton";
+import { ErrorButton } from "./ErrorButton";
 import CloseIcon from '@mui/icons-material/Close';
-import useStyles from "../../hooks/useStyles";
+import useGetStyles from "../../hooks/useGetStyles";
+import styles from './GridContainer.module.css';
 
-export function GridContainer() {
-    const { anchor, imageSrc, position, hrefUrl, initTime } = useAppSelector(state => state.bannersApp);
+
+interface IGridContainerProps {
+    data: IAppData;
+}
+export function GridContainer({ data }: IGridContainerProps) {
+
+    const dispatch = useDispatch();
+
+    const { showBanner } = useAppSelector(state => state.bannersApp.settings);
 
     const [open, setOpen] = useState<boolean>(false);
 
-    const [closeButtonVisibility, setCloseButtonVisibility] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
 
-    const { width, height, direction, alignment, sticking, offsets, visibility, closeButtonSticking } = useStyles({ position: position, anchor: anchor, opened: open });
+    const { width, height, direction, alignment, sticking, offsets, opacity, imageSize,
+        extraButtonVisibility, extraButtonOpacity, extraButtonSticking,
+        closeButtonSticking,
+        errorButtonSticking } = useGetStyles({ position: data.position, anchor: data.anchor, stretch: data.stretch, opened: open });
 
-    const closeButton = useMemo(() => {
-        return <IconButton size='small' sx={{ position: 'absolute', borderRadius: 1, ...closeButtonSticking }} onClick={() => setOpen(false)}><CloseIcon fontSize="inherit" /></IconButton>;
-    }, [closeButtonSticking]);
+    function handleError() {
+        console.log("error loading");
+        setIsError(true);
+    }
+
+    function handleOpen(status: boolean) {
+        setOpen(status);
+    }
+
+    useEffect(() => {
+        setIsError(false);
+    }, [data.imageSrc]);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            setOpen(true);
+            if (showBanner) {
+                if (!isError) {
+                    setOpen(true);
+                }
+            }
             clearTimeout(timeout);
-        }, initTime);
+        }, data.initTime);
 
         return () => clearTimeout(timeout);
-    }, [initTime]);
+    }, [data.initTime, isError]);
 
     return (
-        <Grid container direction={direction} alignItems={alignment} alignContent={alignment} sx={{ boxSizing: 'border-box', visibility: visibility, height: height, width: width, border: 0, position: 'fixed', pointerEvents: 'none', transition: 'all .4s ease-in-out', ...sticking, ...offsets }}>
-            <Grid item sx={{ position: 'relative', pointerEvents: 'auto' }} onPointerEnter={() => setCloseButtonVisibility(true)} onPointerLeave={() => setCloseButtonVisibility(false)}>
-                <Fade in={closeButtonVisibility}>{closeButton}</Fade>
-                <a href={hrefUrl} target="_blank" rel="noreferrer" >
-                    <img src={imageSrc} style={{ display: 'block' }} alt="" />
-                </a>
-            </Grid>
-        </Grid>
+        <Box sx={{ position: 'absolute' }} id="box">
+            {/* if imageSrc provided */}
+            {width &&
+                <Grid container direction={direction} alignItems={alignment} alignContent={alignment} className={styles.wrapper}
+                    sx={{
+                        transition: 'transform 0.4s ease-in-out',
+                        position: 'fixed',
+                        pointerEvents: 'none',
+                        height: height,
+                        width: width,
+                        ...sticking,
+                        ...offsets
+                    }}>
+                    <Grid item mobile={12}
+                        sx={{
+                            position: 'relative',
+                            pointerEvents: 'auto',
+                            ...imageSize
+                        }}>
+                        {/* Banner container */}
+                        <Box className={styles.banner}
+                            sx={{
+                                transition: 'opacity 0.4s ease-in-out',
+                                height: '100%',
+                                width: '100%',
+                                opacity: opacity
+                            }}>
+                            <IconButton size='small'
+                                sx={{
+                                    padding: '2px',
+                                    position: 'absolute',
+                                    borderRadius: '1px',
+                                    ...closeButtonSticking
+                                }}
+                                onClick={() => {
+                                    setOpen(false);
+                                    dispatch(bannersAppActions.showBanners({ show: false }));
+                                }}>
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                            <a href={data.hrefUrl} target="_blank" rel="noreferrer" >
+                                <img src={data.imageSrc} style={{ display: 'block', ...imageSize }} alt="" onError={() => handleError()} />
+                            </a>
+                        </Box>
+                        {/* Extra open button - if no error*/}
+                        {!isError &&
+                            <ExtraOpenButton showBanner={showBanner} extraButtonOpacity={extraButtonOpacity} extraButtonVisibility={extraButtonVisibility} extraButtonSticking={extraButtonSticking} onOpen={handleOpen} />
+                        }
+                    </Grid>
+                </Grid>
+            }
+            {isError && <ErrorButton errorButtonSticking={errorButtonSticking} />}
+
+        </Box >
     );
 }
