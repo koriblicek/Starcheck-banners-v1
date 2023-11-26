@@ -1,4 +1,4 @@
-import { Box, Button, Grid, IconButton } from "@mui/material";
+import { Box, Grid, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { bannersAppActions } from "../../store/banners-data/bannersAppSlice";
@@ -8,8 +8,6 @@ import { ExtraOpenButton } from "./ExtraOpenButton";
 import { ErrorButton } from "./ErrorButton";
 import CloseIcon from '@mui/icons-material/Close';
 import useGetStyles from "../../hooks/useGetStyles";
-import styles from './GridContainer.module.css';
-
 
 interface IGridContainerProps {
     data: IAppData;
@@ -30,7 +28,7 @@ export function GridContainer({ data }: IGridContainerProps) {
         errorButtonSticking } = useGetStyles({ position: data.position, anchor: data.anchor, stretch: data.stretch, opened: open });
 
     function handleError() {
-        console.log("error loading");
+        // console.log("error loading");
         setIsError(true);
     }
 
@@ -53,15 +51,19 @@ export function GridContainer({ data }: IGridContainerProps) {
         }, data.initTime);
 
         return () => clearTimeout(timeout);
-    }, [data.initTime, isError]);
+    }, [data.initTime, isError, showBanner]);
 
     return (
         <Box sx={{ position: 'absolute' }} id="box">
             {/* if imageSrc provided */}
             {width &&
-                <Grid container direction={direction} alignItems={alignment} alignContent={alignment} className={styles.wrapper}
+                <Grid container direction={direction} alignItems={alignment} alignContent={alignment}
                     sx={{
                         transition: 'transform 0.4s ease-in-out',
+                        WebkitTransition: 'opacity 0.4s ease-in-out',
+                        MozTransition: 'opacity 0.4s ease-in-out',
+                        MsTransition: 'opacity 0.4s ease-in-out',
+                        OTransition: 'opacity 0.4s ease-in-out',
                         position: 'fixed',
                         pointerEvents: 'none',
                         height: height,
@@ -76,9 +78,13 @@ export function GridContainer({ data }: IGridContainerProps) {
                             ...imageSize
                         }}>
                         {/* Banner container */}
-                        <Box className={styles.banner}
+                        <Box
                             sx={{
                                 transition: 'opacity 0.4s ease-in-out',
+                                WebkitTransition: 'opacity 0.4s ease-in-out',
+                                MozTransition: 'opacity 0.4s ease-in-out',
+                                MsTransition: 'opacity 0.4s ease-in-out',
+                                OTransition: 'opacity 0.4s ease-in-out',
                                 height: '100%',
                                 width: '100%',
                                 opacity: opacity
