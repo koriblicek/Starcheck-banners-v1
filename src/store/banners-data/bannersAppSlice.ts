@@ -38,7 +38,7 @@ export const bannersAppSlice = createSlice({
             }
             //if show banners data exists
             //and show banners === false - check timestamp if in range (keep not showing), or if not (start showing)
-            if (showBanners === "false") {
+            if (showBanners.toString() === "false") {
                 //get timestamp
                 const timestamp = localStorage.getItem(LOCALSTORAGE_TIMESTAMP);
 
@@ -51,7 +51,7 @@ export const bannersAppSlice = createSlice({
                 //if timestamp - compare it with now
                 const diff: number = (Date.now() - Number(timestamp));
                 //if delay is over - show banners and store true
-                if (diff >= state.data.global.initTime) {
+                if (diff >= state.data.global.timeOut) {
                     localStorage.setItem(LOCALSTORAGE_SHOWBANNERS, String(true));
                     state.settings.showBanner = true;
                     return;

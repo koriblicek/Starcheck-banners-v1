@@ -11,6 +11,8 @@ export enum EPositions {
 
 export const LOCALSTORAGE_SHOWBANNERS = "banners-show_banners";
 export const LOCALSTORAGE_TIMESTAMP = "banners-timestamp";
+export const APP_NAME = "APIBANNERS";
+export const APP_ERROR_LINK = "https://www.starcheck.sk/ApiErrorNote";
 
 //#region APP
 //Input data via div/script
@@ -46,7 +48,6 @@ export interface IAppGlobalData {
 //Internal data from API
 export interface IAppInternalData {
     infoLink: string;
-    errorLink: string;
 }
 
 // Data from API

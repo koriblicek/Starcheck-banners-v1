@@ -2,12 +2,13 @@ import { Box, Grid, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { bannersAppActions } from "../../store/banners-data/bannersAppSlice";
-import { IAppDeviceData, IAppGlobalData, IAppInternalData } from "../../types";
+import { APP_ERROR_LINK, APP_NAME, IAppDeviceData, IAppGlobalData, IAppInternalData } from "../../types";
 import { useAppSelector } from "../../store/hooks";
 import { ExtraOpenButton } from "./ExtraOpenButton";
 import CloseIcon from '@mui/icons-material/Close';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useGetStyles from "../../hooks/useGetStyles";
+import usePutToAPI from "../../hooks/usePutToAPI";
 
 interface IGridContainerProps {
     deviceData: IAppDeviceData;
@@ -29,10 +30,13 @@ export function GridContainer({ deviceData, globalData, internalData }: IGridCon
         extraButtonVisibility, extraButtonOpacity, extraButtonSticking,
         buttonsBoxSticking, buttonsBoxDirection } = useGetStyles({ position: deviceData.position, anchor: deviceData.anchor, stretch: deviceData.stretch, opened: open });
 
+    const { handleSubmit } = usePutToAPI(APP_ERROR_LINK);
+
     function handleError() {
-        // console.log("error loading");
-        //TODO request to internalData.errorLink
+        const errorMessage = `Can't load banner: ${deviceData.imageSrc}`;
         setIsError(true);
+        handleSubmit({ app: APP_NAME, referrer: window.location.href, errorMessage: errorMessage });
+        console.log(`(Starcheck-banners): ${errorMessage}`);
     }
 
     function handleOpen(status: boolean) {
