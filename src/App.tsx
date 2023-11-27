@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { IAppDeviceData, IAppInputData } from "./types";
+import { IAppData, IAppInputData } from "./types";
 import { useDispatch } from "react-redux";
 import { bannersAppActions } from "./store/banners-data/bannersAppSlice";
 import { Wrapper } from "./components/Wrapper";
@@ -17,7 +17,7 @@ interface IAppProps {
 function App({ inputData }: IAppProps) {
 	const dispatch = useDispatch();
 
-	const { error, data } = useGetFromAPI<IAppDeviceData>(inputData.dataApiLink + inputData.dataId + "/" + inputData.dataModule + "/" + inputData.dataVersion + "/settings");
+	const { error, data } = useGetFromAPI<IAppData>(inputData.dataApiLink + inputData.dataId + "/" + inputData.dataModule + "/" + inputData.dataVersion + "/settings");
 
 	const [proceed, setProceed] = useState<boolean>(false);
 
@@ -27,15 +27,13 @@ function App({ inputData }: IAppProps) {
 			setProceed(true);
 		}
 		if (error) {
-			// console.log(error);
-			dispatch(bannersAppActions.initialize({ data: null }));
-			setProceed(true);
+			console.log(error);
 		}
 	}, [data, error, dispatch]);
 
 	return (
 		<Fragment>
-			{proceed && <Wrapper />}
+			{data && <Wrapper data={data} />}
 		</Fragment>
 	);
 }

@@ -20,42 +20,51 @@ const myEffect = keyframes`
 
 interface IExtraOpenButtonProps {
   showBanner: boolean;
-  extraButtonOpacity: number;
-  extraButtonVisibility: "visible" | "hidden";
-  extraButtonSticking: IExtraStick;
+  opacity: number;
+  visibility: "visible" | "hidden";
+  sticking: IExtraStick;
+  transitionTime: number;
+  label: string;
+  color: string;
   onOpen: (status: boolean) => void;
 }
 
-export function ExtraOpenButton({ showBanner, extraButtonOpacity, extraButtonVisibility, extraButtonSticking, onOpen }: IExtraOpenButtonProps) {
+export function ExtraOpenButton({ showBanner, opacity, visibility, sticking, transitionTime, label, color, onOpen }: IExtraOpenButtonProps) {
 
   const dispatch = useDispatch();
 
   return (
-    <Button size="small" variant="text" color={(showBanner) ? 'primary' : 'warning'}
+    <Button size="small" variant="text"
       endIcon={<CampaignOutlinedIcon sx={{
         paddingRight: 1,
         animation: `${myEffect} ${showBanner ? '.5s' : '2s'} infinite`
       }} />}
       sx={{
-        transition: 'opacity 0.4s ease-in-out, visibility 0.4s ease-in-out',
-        WebkitTransition: 'opacity 0.4s ease-in-out, visibility 0.4s ease-in-out',
-        MozTransition: 'opacity 0.4s ease-in-out, visibility 0.4s ease-in-out',
-        MsTransition: 'opacity 0.4s ease-in-out, visibility 0.4s ease-in-out',
-        OTransition: 'opacity 0.4s ease-in-out, visibility 0.4s ease-in-out',
+        borderColor: { color },
+        transition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
+        WebkitTransition: `opacity ${transitionTime}s${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
+        MozTransition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
+        MsTransition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
+        OTransition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
         padding: '0px',
+        color: { color },
+        backgroundColor: '#DCDCDC',
+        "&:hover": {
+          backgroundColor: '#ECECEC',
+        },
         paddingLeft: 1,
         position: 'absolute',
         borderRadius: 0,
-        opacity: extraButtonOpacity,
-        visibility: extraButtonVisibility,
-        ...extraButtonSticking
+        opacity: opacity,
+        visibility: visibility,
+        ...sticking
       }}
       onClick={() => {
         onOpen(true);
         dispatch(bannersAppActions.showBanners({ show: true }));
       }}
     >
-      Advert
+      {label}
     </Button>
   );
 }

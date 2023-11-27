@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 
 //find root element
-const rootElement = document.getElementById('MODAPIBANNERS-root') as HTMLElement;
+const rootElement = document.getElementById('APIBANNERS-root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
 //input data
@@ -20,8 +20,6 @@ if (root) {
   const di = rootElement.getAttribute("data-id");
   const dm = rootElement.getAttribute("data-module");
   const dv = rootElement.getAttribute("data-version");
-  const ds = rootElement.getAttribute("data-src");
-  const dl = rootElement.getAttribute("data-link");
   if ((dal !== null) && (di !== null) && (dm !== null) && (dv !== null)) {
     inputData = {
       dataApiLink: dal,
@@ -29,14 +27,6 @@ if (root) {
       dataModule: dm,
       dataVersion: dv
     };
-    //if extra data presented
-    if (ds) {
-      inputData = { ...inputData, dataSrc: ds };
-    }
-    //if extra data presented
-    if (dl) {
-      inputData = { ...inputData, dataLink: dl };
-    }
   } else {
     errorMessage = `(Starcheck-banners: Some of reuiqred input data are missing!`;
     console.log(errorMessage);

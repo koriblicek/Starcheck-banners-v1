@@ -2,17 +2,20 @@ import { Box, Grid, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { bannersAppActions } from "../../store/banners-data/bannersAppSlice";
-import { IAppData } from "../../types";
+import { IAppDeviceData, IAppGlobalData, IAppInternalData } from "../../types";
 import { useAppSelector } from "../../store/hooks";
 import { ExtraOpenButton } from "./ExtraOpenButton";
-import { ErrorButton } from "./ErrorButton";
 import CloseIcon from '@mui/icons-material/Close';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import useGetStyles from "../../hooks/useGetStyles";
 
 interface IGridContainerProps {
-    data: IAppData;
+    deviceData: IAppDeviceData;
+    globalData: IAppGlobalData;
+    internalData: IAppInternalData;
+
 }
-export function GridContainer({ data }: IGridContainerProps) {
+export function GridContainer({ deviceData, globalData, internalData }: IGridContainerProps) {
 
     const dispatch = useDispatch();
 
@@ -24,11 +27,11 @@ export function GridContainer({ data }: IGridContainerProps) {
 
     const { width, height, direction, alignment, sticking, offsets, opacity, imageSize,
         extraButtonVisibility, extraButtonOpacity, extraButtonSticking,
-        closeButtonSticking,
-        errorButtonSticking } = useGetStyles({ position: data.position, anchor: data.anchor, stretch: data.stretch, opened: open });
+        buttonsBoxSticking, buttonsBoxDirection } = useGetStyles({ position: deviceData.position, anchor: deviceData.anchor, stretch: deviceData.stretch, opened: open });
 
     function handleError() {
         // console.log("error loading");
+        //TODO request to internalData.errorLink
         setIsError(true);
     }
 
@@ -38,7 +41,7 @@ export function GridContainer({ data }: IGridContainerProps) {
 
     useEffect(() => {
         setIsError(false);
-    }, [data.imageSrc]);
+    }, [deviceData.imageSrc]);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -48,10 +51,15 @@ export function GridContainer({ data }: IGridContainerProps) {
                 }
             }
             clearTimeout(timeout);
-        }, data.initTime);
+        }, globalData.initTime);
 
         return () => clearTimeout(timeout);
-    }, [data.initTime, isError, showBanner]);
+    }, [globalData.initTime, isError, showBanner]);
+
+    const openInNewTab = (url: string) => {
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+        if (newWindow) newWindow.opener = null;
+    };
 
     return (
         <Box sx={{ position: 'absolute' }} id="box">
@@ -59,11 +67,11 @@ export function GridContainer({ data }: IGridContainerProps) {
             {width &&
                 <Grid container direction={direction} alignItems={alignment} alignContent={alignment}
                     sx={{
-                        transition: 'transform 0.4s ease-in-out',
-                        WebkitTransition: 'opacity 0.4s ease-in-out',
-                        MozTransition: 'opacity 0.4s ease-in-out',
-                        MsTransition: 'opacity 0.4s ease-in-out',
-                        OTransition: 'opacity 0.4s ease-in-out',
+                        transition: `transform ${globalData.transitionTime}s ease-in-out`,
+                        WebkitTransition: `transform ${globalData.transitionTime}s ease-in-out`,
+                        MozTransition: `transform ${globalData.transitionTime}s ease-in-out`,
+                        MsTransition: `transform ${globalData.transitionTime}s ease-in-out`,
+                        OTransition: `transform ${globalData.transitionTime}s ease-in-out`,
                         position: 'fixed',
                         pointerEvents: 'none',
                         height: height,
@@ -80,41 +88,58 @@ export function GridContainer({ data }: IGridContainerProps) {
                         {/* Banner container */}
                         <Box
                             sx={{
-                                transition: 'opacity 0.4s ease-in-out',
-                                WebkitTransition: 'opacity 0.4s ease-in-out',
-                                MozTransition: 'opacity 0.4s ease-in-out',
-                                MsTransition: 'opacity 0.4s ease-in-out',
-                                OTransition: 'opacity 0.4s ease-in-out',
+                                transition: `opacity ${globalData.transitionTime}s ease-in-out`,
+                                WebkitTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
+                                MozTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
+                                MsTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
+                                OTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
                                 height: '100%',
                                 width: '100%',
                                 opacity: opacity
                             }}>
-                            <IconButton size='small'
-                                sx={{
-                                    padding: '2px',
-                                    position: 'absolute',
-                                    borderRadius: '1px',
-                                    ...closeButtonSticking
-                                }}
-                                onClick={() => {
-                                    setOpen(false);
-                                    dispatch(bannersAppActions.showBanners({ show: false }));
-                                }}>
-                                <CloseIcon fontSize="inherit" />
-                            </IconButton>
-                            <a href={data.hrefUrl} target="_blank" rel="noreferrer" >
-                                <img src={data.imageSrc} style={{ display: 'block', ...imageSize }} alt="" onError={() => handleError()} />
+                            <Box sx={{
+                                position: 'absolute',
+                                ...buttonsBoxSticking
+                            }}>
+                                <Grid container direction={buttonsBoxDirection}>
+                                    <Grid item>
+                                        <IconButton size='small'
+                                            sx={{
+                                                padding: '2px',
+                                                borderRadius: '1px',
+                                            }}
+                                            onClick={() => {
+                                                openInNewTab(internalData.infoLink);
+                                            }}>
+                                            <InfoOutlinedIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item>
+                                        <IconButton size='small'
+                                            sx={{
+                                                padding: '2px',
+                                                borderRadius: '1px',
+                                            }}
+                                            onClick={() => {
+                                                setOpen(false);
+                                                dispatch(bannersAppActions.showBanners({ show: false }));
+                                            }}>
+                                            <CloseIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                            <a href={globalData.hrefUrl} target="_blank" rel="noreferrer" >
+                                <img src={deviceData.imageSrc} style={{ display: 'block', ...imageSize }} alt="" onError={() => handleError()} />
                             </a>
                         </Box>
                         {/* Extra open button - if no error*/}
                         {!isError &&
-                            <ExtraOpenButton showBanner={showBanner} extraButtonOpacity={extraButtonOpacity} extraButtonVisibility={extraButtonVisibility} extraButtonSticking={extraButtonSticking} onOpen={handleOpen} />
+                            <ExtraOpenButton showBanner={showBanner} opacity={extraButtonOpacity} visibility={extraButtonVisibility} sticking={extraButtonSticking} transitionTime={globalData.transitionTime} label={globalData.tabText} color={globalData.tabColor} onOpen={handleOpen} />
                         }
                     </Grid>
                 </Grid>
             }
-            {isError && <ErrorButton errorButtonSticking={errorButtonSticking} />}
-
         </Box >
     );
 }

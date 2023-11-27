@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react';
-import { EPositions, TAnchor, TPosition } from '../types';
+import { EPositions, IDirection, TAnchor, TPosition } from '../types';
 
 export interface IStick {
     left?: number;
@@ -24,16 +24,17 @@ interface IOffset {
 
 type State = {
     alignment: EPositions;
-    closeButtonSticking: IStick;
+    buttonsBoxSticking: IStick;
+    buttonsBoxDirection: IDirection;
+    buttonsBoxOrder: string;
     extraButtonOpacity: number;
     extraButtonVisibility: "visible" | "hidden";
     extraButtonSticking: IExtraStick;
-    errorButtonSticking: IExtraStick;
     sticking: IStick;
     offsets: IOffset;
     width: string;
     height: string;
-    direction: "row" | "column";
+    direction: IDirection;
     opacity: number;
     imageSize: ISize;
 };
@@ -48,39 +49,39 @@ const initialState = {
 function reducer(state: State, action: Action): State {
     let sticking: IStick = {};
     let offsets: IOffset = {};
-    let closeButtonSticking: IStick = {};
+    let buttonsBoxDirection:IDirection = "row";
+    let buttonsBoxSticking: IStick = {};
     let extraButtonSticking: IExtraStick = {};
-    let errorButtonSticking: IExtraStick = {};
     switch (action.type) {
         case "CALCULATE":
             switch (action.payload.anchor) {
                 case "left":
                     sticking = { left: 0, top: 0 };
                     offsets = { transform: `translate(${(-100 + (action.payload.opened ? 100 : 0)).toString()}%, 0)` };
-                    closeButtonSticking = { right: 1, top: 1 };
+                    buttonsBoxDirection = "column-reverse";
+                    buttonsBoxSticking = { right: 1, top: 1 };
                     extraButtonSticking = { top: 0, right: 0, transformOrigin: '100% 0', transform: 'rotate(90deg) translate(100%,-100%)' };
-                    errorButtonSticking = { top: 0, left: 0,transformOrigin: '0 0', transform: 'rotate(90deg) translate(0,-100%)'};
                     break;
                 case "right":
                     sticking = { right: 0, top: 0 };
                     offsets = { transform: `translate(${(100 + (action.payload.opened ? -100 : 0)).toString()}%, 0)` };
-                    closeButtonSticking = { left: 1, top: 1 };
+                    buttonsBoxDirection = "column-reverse";
+                    buttonsBoxSticking = { left: 1, top: 1 };
                     extraButtonSticking = { top: 0, left: 0, transformOrigin: '0 0', transform: 'rotate(-90deg) translate(-100%,-100%)' };
-                    errorButtonSticking = { bottom: 0, right: 0, transformOrigin: '100% 100%', transform: 'rotate(-90deg) translate(100%,0)'};
                     break;
                 case "top":
                     sticking = { left: 0, top: 0 };
                     offsets = { transform: `translate(0,${(-100 + (action.payload.opened ? 100 : 0)).toString()}%)` };
-                    closeButtonSticking = { right: 1, bottom: 1 };
+                    buttonsBoxDirection = "row";
+                    buttonsBoxSticking = { right: 1, bottom: 1 };
                     extraButtonSticking = { bottom: 0, right: 0, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
-                    errorButtonSticking = { top: 0, right: 0};
                     break;
                 case "bottom":
                     sticking = { left: 0, bottom: 0 };
                     offsets = { transform: `translate(0, ${(100 + (action.payload.opened ? -100 : 0)).toString()}%)` };
-                    closeButtonSticking = { right: 1, top: 1 };
+                    buttonsBoxDirection = "row";
+                    buttonsBoxSticking = { right: 1, top: 1 };
                     extraButtonSticking = { top: 0, right: 0, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
-                    errorButtonSticking = { bottom: 0, left: 0};
                     break;
             }
 
@@ -100,8 +101,7 @@ function reducer(state: State, action: Action): State {
                 ...state,
                 sticking, offsets,
                 extraButtonSticking, extraButtonVisibility, extraButtonOpacity,
-                closeButtonSticking,
-                errorButtonSticking,
+                buttonsBoxSticking, buttonsBoxDirection,
                 width, height, direction, opacity, alignment, imageSize
             };
 

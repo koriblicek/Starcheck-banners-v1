@@ -1,33 +1,34 @@
 import { createTheme } from "@mui/material/styles";
 import { GridContainer } from "../GridContainer";
 import { useAppSelector } from "../../store/hooks";
-import { useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { bannersAppActions } from "../../store/banners-data/bannersAppSlice";
-import { TViewPortSize } from "../../types";
+import { IAppData, TViewPortSize } from "../../types";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 declare module '@mui/material/styles' {
     interface BreakpointOverrides {
-        mobile: true; // adds the `mobile` breakpoint
+        mobile: true;
         tablet: true;
         desktop: true;
     }
 }
 
+interface IWrapperProps {
+    data: IAppData;
+}
 //detects size and orientation and inject correct data to GridContainer
-export function Wrapper() {
+export function Wrapper({ data }: IWrapperProps) {
     const dispatch = useDispatch();
-
-    const { data, noData } = useAppSelector(state => state.bannersApp);
 
     //detect oriantation
     const landscape = useMediaQuery('(orientation: landscape)');
-
     useEffect(() => {
         dispatch(bannersAppActions.setViewPortOrientation({ orientation: landscape ? "landscape" : "portrait" }));
     }, [landscape, dispatch]);
 
+    //set breakpoints
     const theme = createTheme({
         breakpoints: {
             values: {
@@ -36,22 +37,24 @@ export function Wrapper() {
                 md: 900,
                 lg: 1200,
                 xl: 1536,
-                mobile: data["mobile"] ? data["mobile"].breakpoint : noData["mobile"].breakpoint,
-                tablet: data["tablet"] ? data["tablet"].breakpoint : noData["tablet"].breakpoint,
-                desktop: data["desktop"] ? data["desktop"].breakpoint : noData["desktop"].breakpoint
+                mobile: data.client["mobile"] ? data.client["mobile"].breakpoint : 0,
+                tablet: data.client["tablet"] ? data.client["tablet"].breakpoint : 600,
+                desktop: data.client["desktop"] ? data.client["desktop"].breakpoint : 992
             },
         },
     });
-    // const mobile = useMediaQuery(theme.breakpoints.only("xs"));
+
+    //detect device size
     const tablet = useMediaQuery(theme.breakpoints.between("tablet", "desktop"));
     const desktop = useMediaQuery(theme.breakpoints.up("desktop"));
     const size: TViewPortSize = useMemo(() => (desktop ? "desktop" : (tablet ? "tablet" : "mobile")), [desktop, tablet]);
-
     useEffect(() => {
         dispatch(bannersAppActions.setViewPortSize({ size: size }));
     }, [tablet, desktop, dispatch, size]);
 
     return (
-        <GridContainer key="banner_grid" data={data[size] ? data[size] : noData[size]} />
+        <Fragment>
+            {data.client[size] && <GridContainer key="banner_grid" deviceData={data.client[size]} globalData={data.global} internalData={data.internal} />}
+        </Fragment>
     );
 }

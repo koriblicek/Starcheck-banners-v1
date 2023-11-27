@@ -1,47 +1,23 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IAppData, IAppDeviceData, IAppSettings, LOCALSTORAGE_SHOWBANNERS, LOCALSTORAGE_TIMESTAMP, SHOW_BANNERS_DELAY, TViewPortOrientation, TViewPortSize } from '../../types';
+import { IAppData, IAppGlobalData, IAppSettings, LOCALSTORAGE_SHOWBANNERS, LOCALSTORAGE_TIMESTAMP, TViewPortOrientation, TViewPortSize } from '../../types';
 
 interface IState {
-    data: IAppDeviceData;
-    noData: IAppDeviceData;
+    data: IAppData;
     settings: IAppSettings;
 }
 
 const initialState = {
     data: {
-    } as IAppDeviceData,
-    noData: {
-        "mobile": {
-            imageSrc: "https://placehold1.co/320x50?text=www.starcheck.sk (320x50)&font=oswald",
-            hrefUrl: "www.starcheck.sk",
+        global: {
             initTime: 1000,
-            anchor: "bottom",
-            position: "center",
-            stretch: true,
-            breakpoint: 0
-        } as IAppData,
-        "tablet": {
-            imageSrc: "https://placehold.co/468x60?text=www.starcheck.sk (468x60)&font=oswald",
-            anchor: "bottom",
-            hrefUrl: "www.starcheck.sk",
-            initTime: 1000,
-            position: "center",
-            stretch: false,
-            breakpoint: 600
-        } as IAppData,
-        "desktop": {
-            //imageSrc: "https://placehold.co/728x90?text=www.starcheck.sk (728x90)&font=oswald",
-            //anchor: "bottom",
-            imageSrc: "https://placehold.co/160x600?text=www.starcheck.sk (160x600)&font=oswald",
-            anchor: "right",
-            hrefUrl: "www.starcheck.sk",
-            initTime: 1000,
-            position: "end",
-            stretch: false,
-            breakpoint: 992
-        } as IAppData
-    },
+            hrefUrl: "https://www.starcheck.sk",
+            timeOut: 3600000,
+            tabColor: "#00bb55",
+            tabText: "Reklama"
+        } as IAppGlobalData
+    } as IAppData,
     settings: {
+        showBanner: true
     } as IAppSettings
 } as IState;
 
@@ -49,7 +25,7 @@ export const bannersAppSlice = createSlice({
     name: 'bannersApp',
     initialState,
     reducers: {
-        initialize: (state, action: PayloadAction<{ data: IAppDeviceData | null; }>) => {
+        initialize: (state, action: PayloadAction<{ data: IAppData | null; }>) => {
             //set data
             state.data = { ...state.data, ...action.payload.data };
             //try to load data from local storage
@@ -60,7 +36,7 @@ export const bannersAppSlice = createSlice({
                 state.settings.showBanner = true;
                 return;
             }
-            //if data
+            //if show banners data exists
             //and show banners === false - check timestamp if in range (keep not showing), or if not (start showing)
             if (showBanners === "false") {
                 //get timestamp
@@ -75,7 +51,7 @@ export const bannersAppSlice = createSlice({
                 //if timestamp - compare it with now
                 const diff: number = (Date.now() - Number(timestamp));
                 //if delay is over - show banners and store true
-                if (diff >= SHOW_BANNERS_DELAY) {
+                if (diff >= state.data.global.initTime) {
                     localStorage.setItem(LOCALSTORAGE_SHOWBANNERS, String(true));
                     state.settings.showBanner = true;
                     return;
