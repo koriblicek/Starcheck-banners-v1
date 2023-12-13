@@ -14,7 +14,6 @@ interface IGridContainerProps {
     deviceData: IAppDeviceData;
     globalData: IAppGlobalData;
     internalData: IAppInternalData;
-
 }
 export function GridContainer({ deviceData, globalData, internalData }: IGridContainerProps) {
 
@@ -71,11 +70,11 @@ export function GridContainer({ deviceData, globalData, internalData }: IGridCon
             {width &&
                 <Grid container direction={direction} alignItems={alignment} alignContent={alignment}
                     sx={{
-                        transition: `transform ${globalData.transitionTime}s ease-in-out`,
-                        WebkitTransition: `transform ${globalData.transitionTime}s ease-in-out`,
-                        MozTransition: `transform ${globalData.transitionTime}s ease-in-out`,
-                        MsTransition: `transform ${globalData.transitionTime}s ease-in-out`,
-                        OTransition: `transform ${globalData.transitionTime}s ease-in-out`,
+                        transition: `transform ${globalData.transitionTime}ms ease-in-out`,
+                        WebkitTransition: `transform ${globalData.transitionTime}ms ease-in-out`,
+                        MozTransition: `transform ${globalData.transitionTime}ms ease-in-out`,
+                        MsTransition: `transform ${globalData.transitionTime}ms ease-in-out`,
+                        OTransition: `transform ${globalData.transitionTime}ms ease-in-out`,
                         position: 'fixed',
                         pointerEvents: 'none',
                         height: height,
@@ -92,11 +91,11 @@ export function GridContainer({ deviceData, globalData, internalData }: IGridCon
                         {/* Banner container */}
                         <Box
                             sx={{
-                                transition: `opacity ${globalData.transitionTime}s ease-in-out`,
-                                WebkitTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
-                                MozTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
-                                MsTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
-                                OTransition: `opacity ${globalData.transitionTime}s ease-in-out`,
+                                transition: `opacity ${globalData.transitionTime}ms ease-in-out`,
+                                WebkitTransition: `opacity ${globalData.transitionTime}ms ease-in-out`,
+                                MozTransition: `opacity ${globalData.transitionTime}ms ease-in-out`,
+                                MsTransition: `opacity ${globalData.transitionTime}ms ease-in-out`,
+                                OTransition: `opacity ${globalData.transitionTime}ms ease-in-out`,
                                 height: '100%',
                                 width: '100%',
                                 opacity: opacity
@@ -105,7 +104,7 @@ export function GridContainer({ deviceData, globalData, internalData }: IGridCon
                                 position: 'absolute',
                                 ...buttonsBoxSticking
                             }}>
-                                <Grid container direction={buttonsBoxDirection}>
+                                <Grid container direction={buttonsBoxDirection} sx={{ backgroundColor: '#DCDCDC', p:'1px' }} columnGap={1} rowGap={1}>
                                     <Grid item>
                                         <IconButton size='small'
                                             sx={{

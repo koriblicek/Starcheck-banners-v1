@@ -41,11 +41,11 @@ export function ExtraOpenButton({ showBanner, opacity, visibility, sticking, tra
       }} />}
       sx={{
         borderColor: { color },
-        transition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
-        WebkitTransition: `opacity ${transitionTime}s${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
-        MozTransition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
-        MsTransition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
-        OTransition: `opacity ${transitionTime}s ${transitionTime}s ease-in-out, visibility ${transitionTime}s ${transitionTime}s ease-in-out`,
+        transition: `opacity ${transitionTime}ms ${transitionTime}ms ease-in-out, visibility ${transitionTime}ms ${transitionTime}ms ease-in-out`,
+        WebkitTransition: `opacity ${transitionTime}ms ${transitionTime}ms ease-in-out, visibility ${transitionTime}ms ${transitionTime}ms ease-in-out`,
+        MozTransition: `opacity ${transitionTime}ms ${transitionTime}ms ease-in-out, visibility ${transitionTime}ms ${transitionTime}ms ease-in-out`,
+        MsTransition: `opacity ${transitionTime}ms ${transitionTime}ms ease-in-out, visibility ${transitionTime}ms ${transitionTime}ms ease-in-out`,
+        OTransition: `opacity ${transitionTime}ms ${transitionTime}ms ease-in-out, visibility ${transitionTime}ms ${transitionTime}ms ease-in-out`,
         padding: '0px',
         color: { color },
         backgroundColor: '#DCDCDC',

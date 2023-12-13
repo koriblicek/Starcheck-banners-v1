@@ -50,7 +50,7 @@ function reducer(state: State, action: Action): State {
     let sticking: IStick = {};
     let offsets: IOffset = {};
     let buttonsBoxDirection:IDirection = "row";
-    let buttonsBoxSticking: IStick = {};
+    let buttonsBoxSticking: IExtraStick = {};
     let extraButtonSticking: IExtraStick = {};
     switch (action.type) {
         case "CALCULATE":
@@ -59,28 +59,28 @@ function reducer(state: State, action: Action): State {
                     sticking = { left: 0, top: 0 };
                     offsets = { transform: `translate(${(-100 + (action.payload.opened ? 100 : 0)).toString()}%, 0)` };
                     buttonsBoxDirection = "column-reverse";
-                    buttonsBoxSticking = { right: 1, top: 1 };
+                    buttonsBoxSticking = { right: 1, top: 1, transformOrigin: '100% 0', transform: 'rotate(0deg) translate(100%,0)' };
                     extraButtonSticking = { top: 0, right: 0, transformOrigin: '100% 0', transform: 'rotate(90deg) translate(100%,-100%)' };
                     break;
                 case "right":
                     sticking = { right: 0, top: 0 };
                     offsets = { transform: `translate(${(100 + (action.payload.opened ? -100 : 0)).toString()}%, 0)` };
                     buttonsBoxDirection = "column-reverse";
-                    buttonsBoxSticking = { left: 1, top: 1 };
+                    buttonsBoxSticking = { left: 1, top: 1, transformOrigin: '0 0', transform: 'rotate(0) translate(-100%,0)' };
                     extraButtonSticking = { top: 0, left: 0, transformOrigin: '0 0', transform: 'rotate(-90deg) translate(-100%,-100%)' };
                     break;
                 case "top":
                     sticking = { left: 0, top: 0 };
                     offsets = { transform: `translate(0,${(-100 + (action.payload.opened ? 100 : 0)).toString()}%)` };
                     buttonsBoxDirection = "row";
-                    buttonsBoxSticking = { right: 1, bottom: 1 };
+                    buttonsBoxSticking = { right: 1, bottom: 1, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
                     extraButtonSticking = { bottom: 0, right: 0, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
                     break;
                 case "bottom":
                     sticking = { left: 0, bottom: 0 };
                     offsets = { transform: `translate(0, ${(100 + (action.payload.opened ? -100 : 0)).toString()}%)` };
                     buttonsBoxDirection = "row";
-                    buttonsBoxSticking = { right: 1, top: 1 };
+                    buttonsBoxSticking = { right: 1, top: 1, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
                     extraButtonSticking = { top: 0, right: 0, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
                     break;
             }

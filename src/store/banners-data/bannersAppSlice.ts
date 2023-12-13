@@ -13,7 +13,8 @@ const initialState = {
             hrefUrl: "https://www.starcheck.sk",
             timeOut: 3600000,
             tabColor: "#00bb55",
-            tabText: "Reklama"
+            tabText: "Reklama",
+            transitionTime: 200
         } as IAppGlobalData
     } as IAppData,
     settings: {
@@ -25,9 +26,24 @@ export const bannersAppSlice = createSlice({
     name: 'bannersApp',
     initialState,
     reducers: {
-        initialize: (state, action: PayloadAction<{ data: IAppData | null; }>) => {
+        initialize: (state, action: PayloadAction<{ data: IAppData; }>) => {
             //set data
-            state.data = { ...state.data, ...action.payload.data };
+            if (action.payload.data.client.mobile.imageSrc !== null) {
+                state.data.client = { ...state.data.client, mobile: action.payload.data.client.mobile };
+            }
+            if (action.payload.data.client.tablet.imageSrc !== null) {
+                state.data.client = { ...state.data.client, tablet: action.payload.data.client.tablet };
+            }
+            if (action.payload.data.client.desktop.imageSrc !== null) {
+                state.data.client = { ...state.data.client, desktop: action.payload.data.client.desktop };
+            }
+            if (action.payload.data.global !== null) {
+                state.data.global = { ...state.data.global, ...action.payload.data.global };
+            }
+            if (action.payload.data.internal !== null) {
+                state.data.internal = { ...state.data.internal, ...action.payload.data.internal };
+            }
+            //state.data = { ...state.data, ...action.payload.data };
             //try to load data from local storage
             const showBanners = localStorage.getItem(LOCALSTORAGE_SHOWBANNERS);
             //if no show banners - store default true settings

@@ -4,7 +4,7 @@ import { useAppSelector } from "../../store/hooks";
 import { Fragment, useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { bannersAppActions } from "../../store/banners-data/bannersAppSlice";
-import { IAppData, TViewPortSize } from "../../types";
+import { TViewPortSize } from "../../types";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 declare module '@mui/material/styles' {
@@ -15,13 +15,11 @@ declare module '@mui/material/styles' {
     }
 }
 
-interface IWrapperProps {
-    data: IAppData;
-}
 //detects size and orientation and inject correct data to GridContainer
-export function Wrapper({ data }: IWrapperProps) {
+export function Wrapper() {
     const dispatch = useDispatch();
 
+    const { data } = useAppSelector(state => state.bannersApp);
     //detect oriantation
     const landscape = useMediaQuery('(orientation: landscape)');
     useEffect(() => {
@@ -43,7 +41,6 @@ export function Wrapper({ data }: IWrapperProps) {
             },
         },
     });
-
     //detect device size
     const tablet = useMediaQuery(theme.breakpoints.between("tablet", "desktop"));
     const desktop = useMediaQuery(theme.breakpoints.up("desktop"));
@@ -54,7 +51,9 @@ export function Wrapper({ data }: IWrapperProps) {
 
     return (
         <Fragment>
-            {data.client[size] && <GridContainer key="banner_grid" deviceData={data.client[size]} globalData={data.global} internalData={data.internal} />}
+            {(data.client[size]) &&
+                <GridContainer key="banner_grid" deviceData={data.client[size]} globalData={data.global} internalData={data.internal} />
+            }
         </Fragment>
     );
 }
