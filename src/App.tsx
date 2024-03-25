@@ -17,7 +17,6 @@ interface IAppProps {
 function App({ inputData }: IAppProps) {
 	const dispatch = useDispatch();
 
-	console.log(inputData.dataApiLink + inputData.dataId + "/" + inputData.dataModule + "/" + inputData.dataVersion + "/settings")
 	const { error, data } = useGetFromAPI<IAppData>(inputData.dataApiLink + inputData.dataId + "/" + inputData.dataModule + "/" + inputData.dataVersion + "/settings");
 
 	const [proceed, setProceed] = useState<boolean>(false);

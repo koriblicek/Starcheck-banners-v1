@@ -49,7 +49,7 @@ const initialState = {
 function reducer(state: State, action: Action): State {
     let sticking: IStick = {};
     let offsets: IOffset = {};
-    let buttonsBoxDirection:IDirection = "row";
+    let buttonsBoxDirection: IDirection = "row";
     let buttonsBoxSticking: IExtraStick = {};
     let extraButtonSticking: IExtraStick = {};
     switch (action.type) {
@@ -58,30 +58,55 @@ function reducer(state: State, action: Action): State {
                 case "left":
                     sticking = { left: 0, top: 0 };
                     offsets = { transform: `translate(${(-100 + (action.payload.opened ? 100 : 0)).toString()}%, 0)` };
-                    buttonsBoxDirection = "column-reverse";
-                    buttonsBoxSticking = { right: 1, top: 1, transformOrigin: '100% 0', transform: 'rotate(0deg) translate(100%,0)' };
-                    extraButtonSticking = { top: 0, right: 0, transformOrigin: '100% 0', transform: 'rotate(90deg) translate(100%,-100%)' };
+                    if (action.payload.position === "end") {
+                        buttonsBoxDirection = "column";
+                        buttonsBoxSticking = { right: 1, bottom: 0, transformOrigin: '100% 0', transform: 'rotate(0deg) translate(100%,0)' };
+                        extraButtonSticking = { bottom: 0, right: 0, transformOrigin: 'bottom right', transform: 'rotate(90deg) translate(0,0)' };
+                    } else {
+                        buttonsBoxDirection = "column-reverse";
+                        buttonsBoxSticking = { right: 1, top: 0, transformOrigin: '100% 0', transform: 'rotate(0deg) translate(100%,0)' };
+                        extraButtonSticking = { top: 0, right: 0, transformOrigin: '100% 0', transform: 'rotate(90deg) translate(100%,-100%)' };
+                    }
                     break;
                 case "right":
                     sticking = { right: 0, top: 0 };
                     offsets = { transform: `translate(${(100 + (action.payload.opened ? -100 : 0)).toString()}%, 0)` };
-                    buttonsBoxDirection = "column-reverse";
-                    buttonsBoxSticking = { left: 1, top: 1, transformOrigin: '0 0', transform: 'rotate(0) translate(-100%,0)' };
-                    extraButtonSticking = { top: 0, left: 0, transformOrigin: '0 0', transform: 'rotate(-90deg) translate(-100%,-100%)' };
+                    if (action.payload.position === "end") {
+                        buttonsBoxDirection = "column";
+                        buttonsBoxSticking = { left: 1, bottom: 0, transformOrigin: '0 0', transform: 'rotate(0) translate(-100%,0)' };
+                        extraButtonSticking = { bottom: 0, left: 0, transformOrigin: 'bottom left', transform: 'rotate(-90deg) translate(0%,0%)' };
+                    } else {
+                        buttonsBoxDirection = "column-reverse";
+                        buttonsBoxSticking = { left: 1, top: 0, transformOrigin: '0 0', transform: 'rotate(0) translate(-100%,0)' };
+                        extraButtonSticking = { top: 0, left: 0, transformOrigin: '0 0', transform: 'rotate(-90deg) translate(-100%,-100%)' };
+                    }
                     break;
                 case "top":
                     sticking = { left: 0, top: 0 };
                     offsets = { transform: `translate(0,${(-100 + (action.payload.opened ? 100 : 0)).toString()}%)` };
-                    buttonsBoxDirection = "row";
-                    buttonsBoxSticking = { right: 1, bottom: 1, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
-                    extraButtonSticking = { bottom: 0, right: 0, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
+                    if (action.payload.position === "start" || action.payload.position === "center") {
+                        buttonsBoxDirection = "row-reverse";
+                        buttonsBoxSticking = { left: 0, bottom: 0, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
+                        extraButtonSticking = { bottom: 0, left: 0, transformOrigin: '0 0', transform: ' translate(0%,100%)' };
+                    } else {
+                        buttonsBoxDirection = "row";
+                        buttonsBoxSticking = { right: 0, bottom: 1, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
+                        extraButtonSticking = { bottom: 0, right: 0, transformOrigin: '100% 0', transform: ' translate(0%,100%)' };
+
+                    }
                     break;
                 case "bottom":
                     sticking = { left: 0, bottom: 0 };
                     offsets = { transform: `translate(0, ${(100 + (action.payload.opened ? -100 : 0)).toString()}%)` };
-                    buttonsBoxDirection = "row";
-                    buttonsBoxSticking = { right: 1, top: 1, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
-                    extraButtonSticking = { top: 0, right: 0, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
+                    if (action.payload.position === "start" || action.payload.position === "center") {
+                        buttonsBoxDirection = "row-reverse";
+                        buttonsBoxSticking = { left: 0, top: 0, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
+                        extraButtonSticking = { top: 0, left: 0, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
+                    } else {
+                        buttonsBoxDirection = "row";
+                        buttonsBoxSticking = { right: 0, top: 0, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
+                        extraButtonSticking = { top: 0, right: 0, transformOrigin: '0 0', transform: ' translate(0%,-100%)' };
+                    }
                     break;
             }
 
