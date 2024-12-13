@@ -30,9 +30,10 @@ if (rootElement) {
       dataModule: dm,
       dataVersion: dv
     };
+    console.log(inputData);
   } else {
     error = true;
-    errorMessage = ` Some of required input data are missing! 'data-id'='${di}','data-module'='${dm}','data-version'='${dv}'`;
+    errorMessage = `Some of required input data are missing! 'data-id'='${di}','data-module'='${dm}','data-version'='${dv}'`;
     console.log(`(Starcheck-banners): ${errorMessage}`);
   }
   root.render(

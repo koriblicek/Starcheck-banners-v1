@@ -1,12 +1,14 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IAppData, IAppGlobalData, IAppSettings, LOCALSTORAGE_SHOWBANNERS, LOCALSTORAGE_TIMESTAMP, TViewPortOrientation, TViewPortSize } from '../../types';
+import { IAppData, IAppGlobalData, IAppInputData, IAppSettings, LOCALSTORAGE_SHOWBANNERS, LOCALSTORAGE_TIMESTAMP, TViewPortOrientation, TViewPortSize } from '../../types';
 
 interface IState {
+    inputData: IAppInputData;
     data: IAppData;
     settings: IAppSettings;
 }
 
 const initialState = {
+    inputData: {},
     data: {
         global: {
             initTime: 1000,
@@ -78,6 +80,9 @@ export const bannersAppSlice = createSlice({
             }
             //show banners = true
             state.settings.showBanner = true;
+        },
+        setInputData: (state, action: PayloadAction<{ data: IAppInputData; }>) => {
+            state.inputData = action.payload.data;
         },
         showBanners: (state, action: PayloadAction<{ show: boolean; }>) => {
             localStorage.setItem(LOCALSTORAGE_SHOWBANNERS, String(action.payload.show));

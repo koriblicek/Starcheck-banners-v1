@@ -19,6 +19,9 @@ export function GridContainer({ deviceData, globalData, internalData }: IGridCon
 
     const dispatch = useDispatch();
 
+    const hideInfoButton = useAppSelector(state => state.bannersApp.data.global.hideInfoButton);
+    console.log(hideInfoButton);
+
     const { showBanner } = useAppSelector(state => state.bannersApp.settings);
 
     const [open, setOpen] = useState<boolean>(false);
@@ -104,19 +107,21 @@ export function GridContainer({ deviceData, globalData, internalData }: IGridCon
                                 position: 'absolute',
                                 ...buttonsBoxSticking
                             }}>
-                                <Grid container direction={buttonsBoxDirection} sx={{ backgroundColor: '#DCDCDC', p:'1px' }} columnGap={1} rowGap={1}>
-                                    <Grid item>
-                                        <IconButton size='small'
-                                            sx={{
-                                                padding: '2px',
-                                                borderRadius: '1px',
-                                            }}
-                                            onClick={() => {
-                                                openInNewTab(internalData.infoLink);
-                                            }}>
-                                            <InfoOutlinedIcon fontSize="inherit" />
-                                        </IconButton>
-                                    </Grid>
+                                <Grid container direction={buttonsBoxDirection} sx={{ backgroundColor: '#DCDCDC', p: '1px' }} columnGap={1} rowGap={1}>
+                                    {!hideInfoButton &&
+                                        <Grid item>
+                                            <IconButton size='small'
+                                                sx={{
+                                                    padding: '2px',
+                                                    borderRadius: '1px',
+                                                }}
+                                                onClick={() => {
+                                                    openInNewTab(internalData.infoLink);
+                                                }}>
+                                                <InfoOutlinedIcon fontSize="inherit" />
+                                            </IconButton>
+                                        </Grid>
+                                    }
                                     <Grid item>
                                         <IconButton size='small'
                                             sx={{

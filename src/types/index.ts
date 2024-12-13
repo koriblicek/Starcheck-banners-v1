@@ -43,6 +43,7 @@ export interface IAppGlobalData {
     tabColor: string;
     tabText: string;
     transitionTime: number;
+    hideInfoButton: boolean;
 }
 
 //Internal data from API

@@ -8,11 +8,14 @@ interface IErrorReportingProps {
     errorUrl: string;
 }
 export function ErrorReporter({ app, referrer, errorMessage, errorUrl }: IErrorReportingProps) {
+    
     const { /*isUploading, isCompleted, error,*/ handleSubmit } = usePutToAPI(errorUrl);
+    
     useEffect(() => {
         console.log(errorMessage)
         handleSubmit({ app: app, referrer: referrer, errorMessage: errorMessage });
     }, [app, referrer, errorMessage, errorUrl, handleSubmit]);
+
     return (
         <></>
     );

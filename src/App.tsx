@@ -23,6 +23,7 @@ function App({ inputData }: IAppProps) {
 
 	useEffect(() => {
 		if (data) {
+			dispatch(bannersAppActions.setInputData({ data: inputData }));
 			dispatch(bannersAppActions.initialize({ data: data }));
 			setProceed(true);
 		}
